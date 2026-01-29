@@ -64,5 +64,17 @@ The output will be in the `dist/` directory.
 - `src/main.js`: Entry point.
 - `index.html`: UI structure.
 
-## License
-MIT
+## Credits & License
+
+### Project License
+The source code of Bacteriograph is released under the **MIT License**. You are free to fork, modify, and use it for personal or commercial projects.
+
+### Fonts Used
+This project uses the following open-source fonts.
+
+- **LINE Seed JP**: [LINE Seed License](https://seed.line.me/index_en.html) (Free for personal and commercial use).
+- **Dela Gothic One**: [SIL Open Font License 1.1](https://fonts.google.com/specimen/Dela+Gothic+One/license).
+
+### Commercial Use of Exports
+The **SVG files generated** by this tool are considered your own artwork. You are free to use them for **commercial purposes** (logos, posters, goods, etc.) without restriction.
+
