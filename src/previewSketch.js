@@ -6,7 +6,7 @@ export const previewSketch = (p) => {
     p.preload = () => {
         try {
             console.log("PreviewSketch: Loading font...");
-            myFont = p.loadFont('/fonts/DelaGothicOne-Regular.ttf');
+            myFont = p.loadFont('./fonts/DelaGothicOne-Regular.ttf');
         } catch (e) {
             console.error("PreviewSketch: Font load error", e);
         }
@@ -26,7 +26,7 @@ export const previewSketch = (p) => {
         p.frameRate(30);
 
         // Load font here to be safe
-        p.loadFont('/fonts/DelaGothicOne-Regular.ttf', (f) => {
+        p.loadFont('./fonts/DelaGothicOne-Regular.ttf', (f) => {
             myFont = f;
             console.log("PreviewSketch: Font loaded");
         });

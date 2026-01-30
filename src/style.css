@@ -171,8 +171,189 @@ button.primary:hover {
     opacity: 0.9;
 }
 
-.actions {
+/* --- MOBILE & RESPONSIVE UI --- */
+
+/* Hamburger Button */
+#menu-toggle {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 100;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    display: none;
+    /* Hidden on Desktop */
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+/* Close Button in Drawer */
+#menu-close {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.drawer-header {
     display: flex;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+/* Bottom Bar (Input) */
+.bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 0.5rem;
+    z-index: 90;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+    pointer-events: auto;
+}
+
+.input-row {
+    display: flex;
+    flex: 1;
+    gap: 0.5rem;
+}
+
+.random-btn {
+    font-size: 1.2rem;
+    padding: 0 1rem;
+}
+
+/* Desktop Defaults */
+.bottom-bar {
+    display: none;
+    /* Hidden on Desktop */
+    /* On PC, input is inside sidebar */
+}
+
+/* --- MOBILE BREAKPOINT --- */
+@media (max-width: 768px) {
+
+    /* Enable Mobile Elements */
+    #menu-toggle {
+        display: flex;
+    }
+
+    .bottom-bar {
+        display: flex;
+    }
+
+    /* Hide PC elements */
+    #controls-guide,
+    .desktop-guide {
+        display: none !important;
+    }
+
+    #credits {
+        font-size: 8px !important;
+        bottom: 80px !important;
+    }
+
+    /* Drawer Styles */
+    aside.controls.drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85%;
+        max-width: 300px;
+        height: 100%;
+        margin: 0;
+        border-radius: 0 12px 12px 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 200;
+        display: flex;
+        flex-direction: column;
+        background: rgba(255, 255, 255, 0.98);
+        border: none;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+    }
+
+    aside.controls.drawer.open {
+        transform: translateX(0);
+    }
+
+    /* Adjust Layout */
+    #ui-overlay {
+        padding: 0;
+        /* Remove padding to let elements touch edges */
+    }
+
+    h1 {
+        display: none;
+        /* Hide Big Title on Mobile to save space */
+    }
+
+    /* Scrollable Sidebar Content */
+    .scrollable-content {
+        flex: 1;
+        overflow-y: auto;
+        padding-bottom: 2rem;
+    }
+}
+
+/* PC Override for Input Bar placement (It was moved out of sidebar, so let's put it back visually via grid or absolute if needed, OR just use the bottom bar on PC too? User said "Bottom Input Bar" is good.) */
+/* Let's unify: Bottom Bar works for PC too, maximizing canvas. */
+/* If so, we need to style it for Desktop too. */
+
+@media (min-width: 769px) {
+    .bottom-bar {
+        display: flex;
+        width: 320px;
+        /* Floating width */
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 2rem;
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    #input-text {
+        border: none;
+        background: transparent;
+        text-align: center;
+        font-weight: bold;
+        outline: none;
+    }
+
+    /* Remove input from Sidebar? It's already removed in HTML. */
+
+    /* Adjust Drawer to be floating Sidebar again */
+    aside.controls.drawer {
+        top: 2rem;
+        left: 2rem;
+        border-radius: 12px;
+        max-height: 80vh;
+        overflow-y: auto;
+        /* Desktop: Always Visible? OR User asked specifically for Hamburger? */
+        /* "UIはハンバーガーメニューで格納しようかな" -> OK, Hamburger on PC too? */
+        /* Let's make it consistent. Collapsed by default even on PC? Or visible? */
+        /* Usually PC has space. Let's keep it visible on PC for ease, but support toggle if requested. */
+        /* User said "UIはハンバーガー". Let's try Hamburger everywhere for consistency + clean view. */
+
+        /* Actually, let's keep it simple: Mobile = Drawer, Desktop = Visible Sidebar. */
+        /* BUT user said "UIはハンバーガーメニューで格納しようかな". So I will make it closable on PC too. */
+    }
+
+    /* Let's stick to the "Drawer" pattern for PC too if desired, OR just Sidebar. */
+    /* Let's Keep Sidebar visible on PC but clean up styles. */
 }

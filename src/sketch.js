@@ -99,6 +99,69 @@ export const sketch = (p) => {
         }
     };
 
+    // --- TOUCH EVENTS (Mobile Support) ---
+    // Variables for pinch zoom
+    let distStart = -1;
+    let scaleStart = -1;
+    let lastTouchX = 0;
+    let lastTouchY = 0;
+
+    p.touchStarted = () => {
+        // Prevent default browser behavior (scroll/zoom) if touching canvas
+        if (p.touches.length === 1) {
+            // Single touch: Pan
+            lastTouchX = p.touches[0].x;
+            lastTouchY = p.touches[0].y;
+            return false;
+        } else if (p.touches.length === 2) {
+            // Two touches: Pinch Zoom
+            distStart = p.dist(
+                p.touches[0].x, p.touches[0].y,
+                p.touches[1].x, p.touches[1].y
+            );
+            scaleStart = targetViewScale;
+            return false;
+        }
+    };
+
+    p.touchMoved = () => {
+        if (p.touches.length === 1) {
+            // Pan
+            let dx = p.touches[0].x - lastTouchX;
+            let dy = p.touches[0].y - lastTouchY;
+            panX += dx;
+            panY += dy;
+            lastTouchX = p.touches[0].x;
+            lastTouchY = p.touches[0].y;
+            return false;
+        } else if (p.touches.length === 2) {
+            // Pinch Zoom
+            let distCurrent = p.dist(
+                p.touches[0].x, p.touches[0].y,
+                p.touches[1].x, p.touches[1].y
+            );
+
+            if (distStart > 0) {
+                let ratio = distCurrent / distStart;
+                // Exponential feel or direct ratio? Direct is usually better for pinch.
+                targetViewScale = scaleStart * ratio;
+                targetViewScale = p.constrain(targetViewScale, 0.1, 5.0);
+            }
+            return false;
+        }
+        return false;
+    };
+
+    p.touchEnded = () => {
+        // Reset pinch state
+        if (p.touches.length < 2) {
+            distStart = -1;
+            scaleStart = -1;
+        }
+        // If 0 touches, pan ends automatically
+        return false;
+    };
+
     p.setup = () => {
         console.log("p.setup called");
         p.disableFriendlyErrors = true;
@@ -113,7 +176,7 @@ export const sketch = (p) => {
         p.pixelDensity(1);
 
         // Async Font Load
-        p.loadFont('/fonts/LINESeedJP-ExtraBold.ttf',
+        p.loadFont('./fonts/LINESeedJP-ExtraBold.ttf',
             (loadedFont) => {
                 myFont = loadedFont;
                 fontReady = true;

@@ -99,4 +99,25 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- UI/MENU TOGGLE LOGIC ---
+    const menuToggle = document.getElementById('menu-toggle');
+    const menuClose = document.getElementById('menu-close');
+    const drawer = document.getElementById('settings-drawer');
+
+    const toggleMenu = () => {
+        if (drawer) drawer.classList.toggle('open');
+    };
+
+    if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+    if (menuClose) menuClose.addEventListener('click', toggleMenu);
+
+    // Close menu when clicking outside (Overlay click)
+    document.addEventListener('click', (e) => {
+        if (drawer && drawer.classList.contains('open') &&
+            !drawer.contains(e.target) &&
+            !menuToggle.contains(e.target)) {
+            drawer.classList.remove('open');
+        }
+    });
+
 });
