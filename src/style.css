@@ -315,8 +315,9 @@ button.primary:hover {
         border: none;
         box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
         /* Shadow on left */
-        pointer-events: auto;
         /* Ensure Drawer is interactive */
+        /* SAFARI/IPHONE FIX: Avoid Dynamic Island/Notch - Padding for content */
+        padding-top: max(2rem, env(safe-area-inset-top) + 20px);
     }
 
     aside.controls.drawer.open {

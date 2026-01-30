@@ -23,7 +23,17 @@ export const sketch = (p) => {
         forceSign: 1    // 1 = Repel, -1 = Attract
     };
 
-    const MAX_PARTICLES = 10000; // Performance Cap
+    // OPTIMIZATION: Detect Mobile for Performance
+    // Simple check: Width < 768px (Standard Mobile Breakpoint)
+    // We check this in setup or dynamically.
+    const isMobile = () => {
+        return (p.windowWidth < 768);
+    };
+
+    // Dynamic Cap based on device
+    const getMaxParticles = () => {
+        return isMobile() ? 2500 : 10000;
+    };
 
     // --- EXPOSED METHODS ---
     p.updateContent = (input) => {
@@ -55,6 +65,9 @@ export const sketch = (p) => {
     let isSpacePressed = false;
     let isPaused = false; // Pause State
     let simTime = 0; // Accumulated time for pause-able physics
+
+    // TOUCH FIX: Flag to ignore "ghost" mouse events after touch ends
+    let ignoreMouse = false;
 
     // UI Toggles
     let showGrid = true;
@@ -136,6 +149,7 @@ export const sketch = (p) => {
     p.touchMoved = () => {
         isTouchActive = true;
         if (p.touches.length === 1) {
+            ignoreMouse = false; // Re-enable if dragging
             // Pan
             let dx = p.touches[0].x - lastTouchX;
             let dy = p.touches[0].y - lastTouchY;
@@ -183,6 +197,9 @@ export const sketch = (p) => {
             // Also reset internal tracker
             lastTouchX = -9999;
             lastTouchY = -9999;
+
+            // FIX: Set flag to ignore subsequent mouse events (emulated by browser)
+            ignoreMouse = true;
         }
 
         // If 0 touches, pan ends automatically
@@ -455,7 +472,8 @@ export const sketch = (p) => {
         // PERFORMANCE OPTIMIZATION:
         // Use global MAX_PARTICLES to prevent crash on long strings
         // Just clamp the total attempts. This naturally reduces density if area is huge.
-        attempts = Math.min(attempts, MAX_PARTICLES);
+        // Mobile: 2500, Desktop: 10000
+        attempts = Math.min(attempts, getMaxParticles());
 
         for (let i = 0; i < attempts; i++) {
             let x = Math.floor(p.random(pg.width));
@@ -531,11 +549,19 @@ export const sketch = (p) => {
         // But if isTouchActive is false, we MUST return false for touch-based interactions.
         if (isTouchActive) return true;
 
+        // FIX: If ignoring mouse (just finished touch), return false
+        if (ignoreMouse) return false;
+
         // If p.mouseX is "reset" value, force false
         if (p.mouseX < -5000) return false;
 
         return isMouseOver &&
             (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height);
+    };
+
+    p.mouseMoved = () => {
+        // Re-enable mouse interaction when real mouse moves
+        ignoreMouse = false;
     };
 
     p.draw = () => {
