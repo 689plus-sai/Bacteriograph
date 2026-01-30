@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-  <script type="module" crossorigin src="./assets/index--2gPTHuU.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-CihXuptH.css">
+  <script type="module" crossorigin src="./assets/index-CMKvY9tx.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CH0XuPR3.css">
 </head>
 
 <body>
@@ -33,6 +33,18 @@
             </div>
 
             <div class="scrollable-content">
+                <!-- Desktop Input Group (Visible only on PC) -->
+                <div class="control-group desktop-input-group">
+                    <label>テキスト入力 / 選択</label>
+                    <input type="text" id="input-text-desktop" class="input-watcher" placeholder="カタカナを入力..."
+                        maxlength="10">
+                    <div class="button-row">
+                        <button class="icon-btn btn-prev">←</button>
+                        <button class="icon-btn btn-random">ランダム</button>
+                        <button class="icon-btn btn-next">→</button>
+                    </div>
+                </div>
+
                 <div class="control-group">
                     <label>モジュール設定</label>
                     <div class="slider-row">
@@ -82,14 +94,14 @@
             </div>
         </aside>
 
-        <!-- Bottom Input Bar -->
+        <!-- Bottom Input Bar (Mobile Only) -->
         <div class="bottom-bar">
             <div class="input-row">
-                <button class="icon-btn" id="btn-prev">←</button>
-                <input type="text" id="input-text" placeholder="カタカナ..." maxlength="10">
-                <button class="icon-btn" id="btn-next">→</button>
+                <button class="icon-btn btn-prev">←</button>
+                <input type="text" id="input-text-mobile" class="input-watcher" placeholder="カタカナ..." maxlength="10">
+                <button class="icon-btn btn-next">→</button>
             </div>
-            <button class="icon-btn random-btn" id="btn-random">🎲</button>
+            <button class="icon-btn random-btn btn-random">🎲</button>
         </div>
 
     </div>
