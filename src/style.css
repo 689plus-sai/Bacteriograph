@@ -58,11 +58,19 @@ header {
 
 h1 {
     color: #ffffff;
-    /* White title as requested */
-    font-size: 1rem;
+    font-size: 1.5rem;
+    /* Larger title */
     font-weight: 700;
     letter-spacing: -0.02em;
-    margin-bottom: 1rem;
+    margin: 0;
+    pointer-events: auto;
+    /* Allow selecting title if needed */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    /* Position Absolute top-left just in case flex fails or simplifies things */
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    z-index: 20;
 }
 
 #sample-view {
@@ -330,9 +338,15 @@ button.primary:hover {
         display: block;
     }
 
-    /* Restore Original Sidebar Behavior */
+    /* Restore Original Sidebar Behavior - RIGHT ALIGNED */
     aside.controls.drawer {
-        position: static;
+        position: absolute;
+        /* Floating */
+        top: 2rem;
+        right: 2rem;
+        /* Right aligned */
+        left: auto;
+        /* clear left */
         width: 280px;
         transform: none !important;
         height: fit-content;
