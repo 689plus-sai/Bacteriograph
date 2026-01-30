@@ -69,9 +69,9 @@ window.addEventListener('DOMContentLoaded', () => {
     window.previewP5 = previewP5;
 
     // Initial Sync
-    if (sText && sText.value) {
-        console.log("Initial Sync with value:", sText.value);
-        updateAll(sText.value);
+    if (inputs.length > 0 && inputs[0].value) {
+        console.log("Initial Sync with value:", inputs[0].value);
+        updateAll(inputs[0].value);
     } else {
         // Force default 'ア' sync
         updateAll('ア');
@@ -95,6 +95,15 @@ window.addEventListener('DOMContentLoaded', () => {
     bindSlider('param-reaction', 'reaction');
     bindSlider('param-hue', 'hue');
 
+    // Force Type Toggle
+    const forceRadios = document.querySelectorAll('input[name="force-type"]');
+    forceRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            const val = parseFloat(e.target.value);
+            if (mainP5 && mainP5.updateParam) mainP5.updateParam('forceSign', val);
+        });
+    });
+
     // Global Key Listener for Pause
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -110,20 +119,61 @@ window.addEventListener('DOMContentLoaded', () => {
     const menuClose = document.getElementById('menu-close');
     const drawer = document.getElementById('settings-drawer');
 
-    const toggleMenu = () => {
+    const toggleMenu = (e) => {
+        if (e) e.stopPropagation(); // Critical: Stop bubbling to document
         if (drawer) drawer.classList.toggle('open');
     };
 
-    if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
-    if (menuClose) menuClose.addEventListener('click', toggleMenu);
+    if (menuToggle) {
+        menuToggle.addEventListener('click', toggleMenu);
+        menuToggle.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Prevent ghost click
+            toggleMenu(e);
+        }, { passive: false });
+    }
 
-    // Close menu when clicking outside (Overlay click)
-    document.addEventListener('click', (e) => {
+    if (menuClose) {
+        menuClose.addEventListener('click', toggleMenu);
+        menuClose.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            toggleMenu(e);
+        }, { passive: false });
+    }
+
+    // Close menu when clicking/touching outside
+    const closeIfOutside = (e) => {
         if (drawer && drawer.classList.contains('open') &&
             !drawer.contains(e.target) &&
             !menuToggle.contains(e.target)) {
+
+            // If touch, prevent p5 processing if it's purely UI closing
+            // But we want to allow canvas interaction?
+            // Actually, if we close the menu, that IS the interaction.
             drawer.classList.remove('open');
         }
-    });
+    };
+
+    document.addEventListener('click', closeIfOutside);
+    document.addEventListener('touchstart', (e) => {
+        // We don't prevent default here because we want to allow scrolling/canvas touch
+        // But we DO want to close the menu.
+        closeIfOutside(e);
+    }, { passive: true });
+
+    // --- EXTRA MOBILE CONTROLS ---
+    const btnGrid = document.getElementById('btn-grid');
+    const btnFs = document.getElementById('btn-fullscreen');
+
+    if (btnGrid) {
+        btnGrid.addEventListener('click', () => {
+            if (mainP5 && mainP5.toggleGrid) mainP5.toggleGrid();
+        });
+    }
+
+    if (btnFs) {
+        btnFs.addEventListener('click', () => {
+            if (mainP5 && mainP5.toggleFullscreen) mainP5.toggleFullscreen();
+        });
+    }
 
 });

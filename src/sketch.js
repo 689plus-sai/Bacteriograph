@@ -19,7 +19,8 @@ export const sketch = (p) => {
         radius: 0,      // Roundedness
         gravity: 0,
         reaction: 0.5,
-        hue: 0          // Color
+        hue: 0,         // Color
+        forceSign: 1    // 1 = Repel, -1 = Attract
     };
 
     const MAX_PARTICLES = 10000; // Performance Cap
@@ -106,8 +107,13 @@ export const sketch = (p) => {
     let lastTouchX = 0;
     let lastTouchY = 0;
 
-    p.touchStarted = () => {
-        // Prevent default browser behavior (scroll/zoom) if touching canvas
+    p.touchStarted = (e) => {
+        // Allow UI interactions (Buttons, Inputs) to work by not preventing default
+        if (e.target && e.target.tagName !== 'CANVAS') {
+            return true;
+        }
+
+        // Prevent default browser behavior (scroll/zoom) ONLY if touching canvas
         if (p.touches.length === 1) {
             // Single touch: Pan
             lastTouchX = p.touches[0].x;
@@ -152,7 +158,12 @@ export const sketch = (p) => {
         return false;
     };
 
-    p.touchEnded = () => {
+    p.touchEnded = (e) => {
+        // Allow UI interactions
+        if (e.target && e.target.tagName !== 'CANVAS') {
+            return true;
+        }
+
         // Reset pinch state
         if (p.touches.length < 2) {
             distStart = -1;
@@ -320,29 +331,32 @@ export const sketch = (p) => {
     };
 
     // --- FULLSCREEN TOGGLE ---
+    // --- UI/STATE TOGGLES (Exposed for Buttons) ---
+    p.toggleFullscreen = () => {
+        let fs = p.fullscreen();
+        p.fullscreen(!fs);
+
+        // Toggle Body Class for CSS styling
+        if (!fs) {
+            document.body.classList.add('is-fullscreen');
+        } else {
+            document.body.classList.remove('is-fullscreen');
+        }
+    };
+
+    p.toggleGrid = () => {
+        showGrid = !showGrid;
+    };
+
+    // --- KEYBOARD CONTROLS ---
     p.keyPressed = () => {
         if (p.key === 'f' || p.key === 'F') {
-            let fs = p.fullscreen();
-            p.fullscreen(!fs);
-
-            // Toggle UI Overlay with Visibility to prevent reflow
-            let ui = document.getElementById('ui-overlay');
-            if (ui) {
-                // If currently NOT fs (about to enter), hide UI
-                if (!fs) {
-                    ui.style.opacity = '0';
-                    ui.style.visibility = 'hidden';
-                } else {
-                    // About to exit, show UI
-                    ui.style.opacity = '1';
-                    ui.style.visibility = 'visible';
-                }
-            }
+            p.toggleFullscreen();
         }
 
         // Toggle Grid
         if (p.key === 'g' || p.key === 'G') {
-            showGrid = !showGrid;
+            p.toggleGrid();
         }
         if (p.keyCode === 32) { // Space
             isSpacePressed = true;

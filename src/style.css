@@ -167,6 +167,10 @@ button:hover {
     color: #fff;
 }
 
+.mobile-guide {
+    display: none;
+}
+
 button.primary {
     background: var(--accent-color);
     border-color: var(--accent-color);
@@ -257,15 +261,28 @@ button.primary:hover {
     /* Enable Mobile Elements */
     #menu-toggle {
         display: flex;
+        pointer-events: auto;
+        /* Move to Right side */
+        top: 1rem;
+        right: 1.5rem;
+        /* Slightly more inside */
+        left: auto;
     }
 
+    /* Hide Persistent Bottom Bar (User Request: Put it in the menu) */
     .bottom-bar {
-        display: flex;
+        display: none;
     }
 
-    /* Hide Desktop Input Group in Drawer (since we have bottom bar) */
+    /* SHOW the Input Group inside the Drawer instead */
     .desktop-input-group {
-        display: none;
+        display: block;
+        margin-bottom: 2rem;
+    }
+
+    .desktop-input-group .button-row {
+        margin-top: 12px;
+        /* User Request: 12px gap */
     }
 
     /* Hide PC elements */
@@ -274,29 +291,53 @@ button.primary:hover {
         display: none !important;
     }
 
-    #credits {
-        font-size: 8px !important;
-        bottom: 80px !important;
+    /* Show Mobile Guide */
+    .mobile-guide {
+        display: block !important;
+        margin-top: 2.5rem;
+        /* Increased from 1.5rem to detach from buttons */
+        opacity: 0.6;
+        font-size: 0.75rem;
+        line-height: 1.6;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        /* Optional separator for clarity */
     }
 
-    /* Drawer Styles */
+    #credits {
+        font-size: 8px !important;
+        bottom: 1rem !important;
+        /* Was 80px, too high now that bar is gone */
+        right: 1rem !important;
+        pointer-events: auto;
+    }
+
+    /* Drawer Styles - Slide from RIGHT */
     aside.controls.drawer {
         position: fixed;
         top: 0;
-        left: 0;
+        right: 0;
+        /* Align Right */
+        left: auto;
+        /* Clear Left */
         width: 85%;
         max-width: 300px;
         height: 100%;
         margin: 0;
-        border-radius: 0 12px 12px 0;
-        transform: translateX(-100%);
+        border-radius: 12px 0 0 12px;
+        /* Access from Right */
+        /* Start hidden to the RIGHT */
+        transform: translateX(100%);
         transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 200;
         display: flex;
         flex-direction: column;
         background: rgba(255, 255, 255, 0.98);
         border: none;
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.2);
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+        /* Shadow on left */
+        pointer-events: auto;
+        /* Ensure Drawer is interactive */
     }
 
     aside.controls.drawer.open {
@@ -308,8 +349,15 @@ button.primary:hover {
         padding: 0;
     }
 
+    /* Show Title on Mobile too (User requested) */
     h1 {
-        display: none;
+        display: block;
+        /* Was none */
+        font-size: 1.2rem;
+        left: 1.5rem;
+        top: 1.5rem;
+        /* Align baseline roughly with button */
+        pointer-events: auto;
     }
 
     /* Scrollable Sidebar Content */
@@ -336,6 +384,25 @@ button.primary:hover {
     /* Ensure Desktop Input is visible */
     .desktop-input-group {
         display: block;
+        margin-bottom: 2rem;
+        /* Ensure gap below input group */
+    }
+
+    /* User Request: Gap between Input and Buttons */
+    .desktop-input-group input {
+        margin-bottom: 12px;
+    }
+
+    /* User Request: Gap between Grid/FS Buttons and Guide */
+    .actions .row {
+        margin-bottom: 20px;
+    }
+
+    .desktop-guide {
+        margin-top: 1.5rem;
+        opacity: 0.7;
+        font-size: 0.8rem;
+        line-height: 1.6;
     }
 
     /* Restore Original Sidebar Behavior - RIGHT ALIGNED */
@@ -362,4 +429,31 @@ button.primary:hover {
     #menu-close {
         display: none;
     }
+
+    /* Ensure Mobile Guide is Hidden on Desktop */
+    .mobile-guide {
+        display: none !important;
+    }
+}
+
+/* --- FULLSCREEN STATE --- */
+/* When body has .is-fullscreen, hide distractions but KEEP controls accessible */
+body.is-fullscreen #app-title,
+body.is-fullscreen #credits,
+body.is-fullscreen #controls-guide,
+body.is-fullscreen .desktop-guide {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+/* Ensure Hamburger Menu REMAINS VISIBLE in Fullscreen on Mobile */
+body.is-fullscreen #menu-toggle {
+    z-index: 999;
+    /* Ensure on top */
+}
+
+/* Ensure Drawer REMAINS USABLE in Fullscreen */
+body.is-fullscreen #settings-drawer {
+    z-index: 1000;
 }

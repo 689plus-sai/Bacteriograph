@@ -74,6 +74,16 @@
                         <span>反応強度</span>
                         <input type="range" id="param-reaction" min="0" max="2" step="0.1" value="0.5">
                     </div>
+                    <!-- Force Type Toggle -->
+                    <div class="param" style="justify-content: flex-start; gap: 1rem; margin-top: 0.5rem;">
+                        <span style="min-width: 40px;">力場</span>
+                        <label style="font-weight: normal; margin: 0; display: flex; align-items: center; gap: 4px;">
+                            <input type="radio" name="force-type" value="1" checked> 斥力
+                        </label>
+                        <label style="font-weight: normal; margin: 0; display: flex; align-items: center; gap: 4px;">
+                            <input type="radio" name="force-type" value="-1"> 引力
+                        </label>
+                    </div>
                 </div>
 
                 <div class="control-group">
@@ -86,11 +96,27 @@
 
                 <div class="actions">
                     <button id="btn-save" class="primary">SVG保存</button>
+
+                    <!-- Extra Mobile Actions -->
+                    <div class="row" style="margin-top: 1rem;">
+                        <button id="btn-grid">グリッド</button>
+                        <button id="btn-fullscreen">全画面</button>
+                    </div>
+
                     <!-- PC Only Guide -->
                     <div class="desktop-guide">
                         <div>🖱️ Scroll to Zoom</div>
                         <div>💨 Space + Drag to Pan</div>
                         <div>↵ Enter to Pause</div>
+                        <div>⛶ F to Toggle UI</div>
+                        <div>▦ G to Toggle Grid</div>
+                    </div>
+
+                    <!-- Mobile Guide (Visible only on Mobile via CSS) -->
+                    <div class="mobile-guide">
+                        <div>👆 <b>1本指</b>: 移動 (Pan)</div>
+                        <div>✌️ <b>2本指</b>: 拡大縮小 (Zoom)</div>
+                        <div>🎲 <b>ランダム</b>: 文字変更</div>
                     </div>
                 </div>
             </div>
@@ -106,25 +132,6 @@
             <button class="icon-btn random-btn btn-random">🎲</button>
         </div>
 
-    </div>
-
-    <!-- Controls Guide Overlay -->
-    <div id="controls-guide" style="
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        color: rgba(255, 255, 255, 0.5);
-        font-family: sans-serif;
-        font-size: 12px;
-        pointer-events: none;
-        z-index: 100;
-        line-height: 1.6;
-    ">
-        <div>🖱️ <b>Scroll</b> to Zoom</div>
-        <div>💨 <b>Space + Drag</b> to Pan</div>
-        <div>↵ <b>Enter</b> to Pause</div>
-        <div>⛶ <b>F</b> to Toggle UI</div>
-        <div>▦ <b>G</b> to Toggle Grid</div>
     </div>
 
     <footer id="credits" style="

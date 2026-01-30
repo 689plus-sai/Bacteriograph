@@ -149,6 +149,14 @@ export class TextParticle {
         let localMaxSpeed = 8 * zoom;
         let localMaxForce = 0.5 * zoom;
 
+        // --- PARAMETERS ---
+        let reactionParam = (params.reaction !== undefined) ? params.reaction : 0.5;
+        let gravityParam = (params.gravity !== undefined) ? params.gravity : 0.1;
+
+        // Damping & Stability based on Gravity
+        let damping = this.p.map(gravityParam, 0, 2, 0.96, 0.85);
+        let stayMultiplier = this.p.map(gravityParam, 0, 2, 1.0, 4.0);
+
         this.angle += this.angleSpeed;
 
         // --- 1. MOUSE INTERACTION (PRIORITY OVERRIDE) ---
@@ -159,13 +167,27 @@ export class TextParticle {
             let mouse = this.p.createVector(mouseX, mouseY);
             let mbDir = this.pos.copy().sub(mouse);
             let mbDist = mbDir.mag();
-            let repelRange = 300 * (params.reaction || 1.0) * zoom;
+            // User requested smaller max range.
+            let repelRange = 150 * reactionParam * zoom;
+            if (repelRange < 20) repelRange = 20;
 
             if (mbDist < repelRange) {
                 isUnderMouse = true;
                 mbDir.normalize();
-                let forceMag = this.p.map(mbDist, 0, repelRange, 50, 0);
-                mbDir.mult(forceMag * (params.reaction || 1.0));
+
+                // SMOOTHER PHYSICS: Quadratic Falloff
+                // Curve: (1 - dist/range)^2 -> Gentle Start, Strong Center
+                let normDist = mbDist / repelRange;
+                let intensity = Math.pow(1.0 - normDist, 2);
+                let baseForce = 40;
+
+                // Scale Force by Reaction param (Squared)
+                let forceMultiplier = reactionParam * reactionParam * 2.0;
+                let forceMag = baseForce * intensity * forceMultiplier;
+
+                // Apply Force Sign (1 = Repel, -1 = Attract)
+                let sign = params.forceSign !== undefined ? params.forceSign : 1;
+                mbDir.mult(forceMag * sign);
                 this.applyForce(mbDir);
 
                 this.isBroken = true;
@@ -261,19 +283,23 @@ export class TextParticle {
                 }
 
             }
-            // 2. STAY (その場にとどまる)
-            else if (this.role === 'STAY') {
-                // Strong Home Seek
-                // DISABLE if "Broken" (blown away by mouse) to allow flight
+            // 2. STAY (Stable when gravity high)
+            else if (this.role === 'STAY' || gravityParam > 1.5) {
                 if (!this.isBroken) {
-                    let desired = target.copy().sub(this.pos); // Define desired vector
-                    let d = desired.mag(); // Recalculate dist or use existing 'd' (which is dist(target))
+                    let desired = target.copy().sub(this.pos);
+                    // Add Gravity Sag (Offset target downwards)
+                    if (gravityParam > 0.5) {
+                        desired.y += (gravityParam * 5 * zoom);
+                    }
 
+                    let dMag = desired.mag();
                     let speed = localMaxSpeed;
-                    if (d < 50 * zoom) speed = this.p.map(d, 0, 50 * zoom, 0, localMaxSpeed);
+                    if (dMag < 50 * zoom) speed = this.p.map(dMag, 0, 50 * zoom, 0, localMaxSpeed);
                     desired.setMag(speed);
                     let steer = desired.sub(this.vel);
-                    steer.limit(localMaxForce * 2.5); // Very Strong Grip
+
+                    // Apply Stability Limit
+                    steer.limit(localMaxForce * 2.5 * stayMultiplier);
                     this.applyForce(steer);
                 }
                 // If broken, it acts like a temporary wanderer/floater
@@ -309,10 +335,11 @@ export class TextParticle {
 
             // Mouse logic moved to Top (Priority 1)
 
-            // --- 3. GRAVITY ---
-            if (params.gravity > 0 && !isUnderMouse) {
-                let gravity = this.p.createVector(0, params.gravity * 0.5);
-                this.applyForce(gravity);
+            // --- 3. GRAVITY (Downward Bias) ---
+            if (gravityParam > 0.5 && !isUnderMouse) {
+                // Only light constant force, mapped from param
+                let gForce = this.p.createVector(0, gravityParam * 0.1);
+                this.applyForce(gForce);
             }
 
         }
@@ -322,7 +349,8 @@ export class TextParticle {
         this.vel.limit(localMaxSpeed);
         this.pos.add(this.vel);
         this.acc.mult(0);
-        this.vel.mult(0.9); // Friction
+        this.acc.mult(0);
+        this.vel.mult(damping); // Variable Damping
     }
 
     draw(params) {
