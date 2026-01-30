@@ -31,9 +31,14 @@ export const sketch = (p) => {
     };
 
     // Dynamic Cap based on device
+    // AGGRESSIVE OPTIMIZATION:
+    // Mobile: 2500 (User Request)
+    // Desktop: 10000
     const getMaxParticles = () => {
         return isMobile() ? 2500 : 10000;
     };
+
+    const IS_LITE_MODE = () => isMobile();
 
     // --- EXPOSED METHODS ---
     p.updateContent = (input) => {
@@ -228,6 +233,12 @@ export const sketch = (p) => {
         let h = container ? (container.clientHeight || window.innerHeight) : 600;
         p.createCanvas(w, h);
         p.pixelDensity(1);
+
+        // AGGRESSIVE OPTIMIZATION: Cap FPS on mobile
+        if (isMobile()) {
+            p.frameRate(24);
+            console.log("Mobile detected: Capping at 24 FPS");
+        }
 
         // Async Font Load
         p.loadFont('./fonts/LINESeedJP-ExtraBold.ttf',
@@ -610,6 +621,9 @@ export const sketch = (p) => {
                 generateParticles(currentChar, finalSize, centerX, centerY); // generateParticles applies zoom internally
                 params.dirty = false;
             }
+
+            // Inject Lite Mode Flag
+            params.isLiteMode = IS_LITE_MODE();
 
             // --- AUTO-SCALE CALCULATION ---
             // Reference font size for roughly 1 character filling the screen is approx 400-500px.

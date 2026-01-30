@@ -23,6 +23,11 @@ window.addEventListener('DOMContentLoaded', () => {
         container.addEventListener('touchmove', (e) => {
             e.preventDefault();
         }, { passive: false });
+
+        // iOS SPECIFIC FIX: Prevent native zooming (Pinch) so app can handle it
+        container.addEventListener('gesturestart', (e) => e.preventDefault());
+        container.addEventListener('gesturechange', (e) => e.preventDefault());
+        container.addEventListener('gestureend', (e) => e.preventDefault());
     }
 
     /* 

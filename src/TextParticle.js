@@ -48,6 +48,11 @@ export class TextParticle {
 
     // Interaction with other particles (Grid Optimized)
     interact(grid, cellSize, gx, gy, params) {
+        // AGGRESSIVE OPTIMIZATION:
+        // If "forceSign" is used as a proxy or we check isMobile passed in params.
+        // Let's assume params.isLiteMode is set.
+        if (params.isLiteMode) return;
+
         let zoom = params.zoom || 1.0;
         let perception = 30 * zoom; // Interaction radius
 
