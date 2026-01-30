@@ -255,6 +255,11 @@ button.primary:hover {
         display: flex;
     }
 
+    /* Hide Desktop Input Group in Drawer (since we have bottom bar) */
+    .desktop-input-group {
+        display: none;
+    }
+
     /* Hide PC elements */
     #controls-guide,
     .desktop-guide {
@@ -293,12 +298,10 @@ button.primary:hover {
     /* Adjust Layout */
     #ui-overlay {
         padding: 0;
-        /* Remove padding to let elements touch edges */
     }
 
     h1 {
         display: none;
-        /* Hide Big Title on Mobile to save space */
     }
 
     /* Scrollable Sidebar Content */
@@ -309,51 +312,40 @@ button.primary:hover {
     }
 }
 
-/* PC Override for Input Bar placement (It was moved out of sidebar, so let's put it back visually via grid or absolute if needed, OR just use the bottom bar on PC too? User said "Bottom Input Bar" is good.) */
-/* Let's unify: Bottom Bar works for PC too, maximizing canvas. */
-/* If so, we need to style it for Desktop too. */
-
+/* --- DESKTOP (Restoring Original UI) --- */
 @media (min-width: 769px) {
+
+    /* Hide Mobile Bottom Bar completely */
     .bottom-bar {
-        display: flex;
-        width: 320px;
-        /* Floating width */
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 2rem;
-        border-radius: 50px;
-        padding: 0.5rem 1rem;
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: none !important;
     }
 
-    #input-text {
-        border: none;
-        background: transparent;
-        text-align: center;
-        font-weight: bold;
-        outline: none;
+    /* Ensure Hamburger is hidden */
+    #menu-toggle {
+        display: none !important;
     }
 
-    /* Remove input from Sidebar? It's already removed in HTML. */
+    /* Ensure Desktop Input is visible */
+    .desktop-input-group {
+        display: block;
+    }
 
-    /* Adjust Drawer to be floating Sidebar again */
+    /* Restore Original Sidebar Behavior */
     aside.controls.drawer {
-        top: 2rem;
-        left: 2rem;
-        border-radius: 12px;
+        position: static;
+        width: 280px;
+        transform: none !important;
+        height: fit-content;
         max-height: 80vh;
         overflow-y: auto;
-        /* Desktop: Always Visible? OR User asked specifically for Hamburger? */
-        /* "UIはハンバーガーメニューで格納しようかな" -> OK, Hamburger on PC too? */
-        /* Let's make it consistent. Collapsed by default even on PC? Or visible? */
-        /* Usually PC has space. Let's keep it visible on PC for ease, but support toggle if requested. */
-        /* User said "UIはハンバーガー". Let's try Hamburger everywhere for consistency + clean view. */
-
-        /* Actually, let's keep it simple: Mobile = Drawer, Desktop = Visible Sidebar. */
-        /* BUT user said "UIはハンバーガーメニューで格納しようかな". So I will make it closable on PC too. */
+        background: rgba(255, 255, 255, 0.8);
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: none;
     }
 
-    /* Let's stick to the "Drawer" pattern for PC too if desired, OR just Sidebar. */
-    /* Let's Keep Sidebar visible on PC but clean up styles. */
+    /* Hide Drawer specific close button */
+    #menu-close {
+        display: none;
+    }
 }

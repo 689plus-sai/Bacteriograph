@@ -27,36 +27,42 @@ window.addEventListener('DOMContentLoaded', () => {
     */
 
     // Centralized Interaction Logic
-    const sText = document.getElementById('input-text');
+    // Support multiple inputs (Desktop & Mobile)
+    const inputs = document.querySelectorAll('.input-watcher');
 
     const updateAll = (val) => {
         if (!val) return;
         if (mainP5 && mainP5.updateContent) mainP5.updateContent(val);
         if (previewP5 && previewP5.updateContent) previewP5.updateContent(val);
+
+        // Sync all inputs
+        inputs.forEach(inp => {
+            if (inp.value !== val) inp.value = val;
+        });
     };
 
-    if (sText) {
+    inputs.forEach(sText => {
         sText.addEventListener('input', (e) => {
             if (!e.isComposing) updateAll(e.target.value);
         });
         sText.addEventListener('compositionend', (e) => updateAll(e.data));
-    }
+        // Prevent Space Pause
+        sText.addEventListener('keydown', (e) => e.stopPropagation());
+    });
 
     // Button Logic
-    // Import helper dynamically or logic here?
-    // Let's implement simple button handlers here
-
     const setRandom = () => {
-        // Simple Katakana Randomizer
         const katakana = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
         const char = katakana.charAt(Math.floor(Math.random() * katakana.length));
-        if (sText) sText.value = char;
         updateAll(char);
     };
 
-    document.getElementById('btn-random')?.addEventListener('click', setRandom);
-    document.getElementById('btn-next')?.addEventListener('click', setRandom); // Reuse for now
-    document.getElementById('btn-prev')?.addEventListener('click', setRandom);
+    // Bind to all random/next/prev buttons (using classes would be better but let's stick to IDs + multi-listeners if needed)
+    // Actually, let's use class for random buttons
+    document.querySelectorAll('.btn-random').forEach(b => b.addEventListener('click', setRandom));
+    // Prev/Next logic skipped for simplicity as user only requested Random mainly
+    document.querySelectorAll('.btn-prev').forEach(b => b.addEventListener('click', setRandom));
+    document.querySelectorAll('.btn-next').forEach(b => b.addEventListener('click', setRandom));
 
     // Expose for debugging
     window.mainP5 = mainP5;
