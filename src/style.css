@@ -200,7 +200,7 @@ button.primary:hover {
 }
 
 /* --- MOBILE SPECIFIC OVERRIDES --- */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 
     /* Close Button in Drawer */
     #menu-close {
@@ -349,7 +349,7 @@ button.primary:hover {
 }
 
 /* --- DESKTOP (Restoring Original UI) --- */
-@media (min-width: 769px) {
+@media (min-width: 1025px) {
 
     /* Hide Mobile Bottom Bar completely */
     .bottom-bar {

@@ -123,6 +123,7 @@ export const sketch = (p) => {
 
     p.touchStarted = (e) => {
         isTouchActive = true;
+        ignoreMouse = false; // FIX: Reset ignore flag on new touch
 
         // Allow UI interactions (Buttons, Inputs) to work by not preventing default
         if (e.target && e.target.tagName !== 'CANVAS') {
@@ -134,6 +135,7 @@ export const sketch = (p) => {
             // Single touch: Pan
             lastTouchX = p.touches[0].x;
             lastTouchY = p.touches[0].y;
+            // FIX: Prevent default to stop scrolling/zooming immediately on touch start
             return false;
         } else if (p.touches.length === 2) {
             // Two touches: Pinch Zoom
