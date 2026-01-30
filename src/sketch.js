@@ -180,9 +180,20 @@ export const sketch = (p) => {
             // CRITICAL: Reset Mouse Pos so particles don't stuck to last touch
             p.mouseX = -9999;
             p.mouseY = -9999;
+            // Also reset internal tracker
+            lastTouchX = -9999;
+            lastTouchY = -9999;
         }
 
         // If 0 touches, pan ends automatically
+        return false;
+    };
+
+    // Add touchCancelled handling for safety
+    p.touchCancelled = (e) => {
+        isTouchActive = false;
+        p.mouseX = -9999;
+        p.mouseY = -9999;
         return false;
     };
 
@@ -515,8 +526,13 @@ export const sketch = (p) => {
 
     const isMouseInside = () => {
         // Robust check: Element hover state && Coordinates validity && Document focus
-        // OR if Touch is Active (Touch events don't rely on 'mouseenter')
+
+        // If Touch is active, we valid if finger is on screen.
+        // But if isTouchActive is false, we MUST return false for touch-based interactions.
         if (isTouchActive) return true;
+
+        // If p.mouseX is "reset" value, force false
+        if (p.mouseX < -5000) return false;
 
         return isMouseOver &&
             (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height);
