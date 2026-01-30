@@ -106,8 +106,11 @@ export const sketch = (p) => {
     let scaleStart = -1;
     let lastTouchX = 0;
     let lastTouchY = 0;
+    let isTouchActive = false; // Flag to distinguish Touch vs Mouse
 
     p.touchStarted = (e) => {
+        isTouchActive = true;
+
         // Allow UI interactions (Buttons, Inputs) to work by not preventing default
         if (e.target && e.target.tagName !== 'CANVAS') {
             return true;
@@ -131,6 +134,7 @@ export const sketch = (p) => {
     };
 
     p.touchMoved = () => {
+        isTouchActive = true;
         if (p.touches.length === 1) {
             // Pan
             let dx = p.touches[0].x - lastTouchX;
@@ -169,6 +173,15 @@ export const sketch = (p) => {
             distStart = -1;
             scaleStart = -1;
         }
+
+        // Disable Touch Active if no touches remain
+        if (p.touches.length === 0) {
+            isTouchActive = false;
+            // CRITICAL: Reset Mouse Pos so particles don't stuck to last touch
+            p.mouseX = -9999;
+            p.mouseY = -9999;
+        }
+
         // If 0 touches, pan ends automatically
         return false;
     };
@@ -502,6 +515,9 @@ export const sketch = (p) => {
 
     const isMouseInside = () => {
         // Robust check: Element hover state && Coordinates validity && Document focus
+        // OR if Touch is Active (Touch events don't rely on 'mouseenter')
+        if (isTouchActive) return true;
+
         return isMouseOver &&
             (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height);
     };

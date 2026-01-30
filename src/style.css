@@ -28,231 +28,12 @@ body {
     height: 100vh;
 }
 
-#app,
-#canvas-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
-
-#ui-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    /* Let clicks pass to canvas */
-    z-index: 10;
-    padding: 2rem;
-    display: flex;
-    justify-content: space-between;
-}
-
-header {
-    pointer-events: auto;
-}
-
-h1 {
-    color: #ffffff;
-    font-size: 1.5rem;
-    /* Larger title */
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin: 0;
-    pointer-events: auto;
-    /* Allow selecting title if needed */
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    /* Position Absolute top-left just in case flex fails or simplifies things */
-    position: absolute;
-    top: 2rem;
-    left: 2rem;
-    z-index: 20;
-}
-
-#sample-view {
-    display: none;
-    /* Hidden as per request to remove mystery object */
-    width: 100px;
-    height: 100px;
-    background: #fff;
-    border: 1px solid #ddd;
-    align-items: center;
-    justify-content: center;
-    font-size: 3rem;
-    font-weight: bold;
-}
-
-.controls {
-    width: 280px;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(10px);
-    padding: 1.5rem;
-    border-radius: 4px;
-    pointer-events: auto;
-    height: fit-content;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.control-group {
-    margin-bottom: 2rem;
-}
-
-.control-group label {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 700;
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.05em;
-    opacity: 0.6;
-}
-
-.row {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.param {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    font-family: inherit;
-    font-size: 1rem;
-    text-transform: uppercase;
-}
-
-input[type="range"] {
-    width: 60%;
-    -webkit-appearance: none;
-    appearance: none;
-    /* Standard property */
-    height: 2px;
-    background: #ddd;
-    outline: none;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    background: var(--text-color);
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-button {
-    background: transparent;
-    border: 1px solid #000;
-    color: #000;
-    padding: 0.5rem 1rem;
-    font-family: inherit;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-button:hover {
-    background: #000;
-    color: #fff;
-}
-
-.mobile-guide {
-    display: none;
-}
-
-button.primary {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
-    color: #fff;
-    width: 100%;
-    margin-top: 0.5rem;
-}
-
-button.primary:hover {
-    opacity: 0.9;
-}
-
-/* --- MOBILE & RESPONSIVE UI --- */
-
-/* Hamburger Button */
-#menu-toggle {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
-    z-index: 100;
-    width: 44px;
-    height: 44px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    display: none;
-    /* Hidden on Desktop */
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    color: #333;
-}
-
-/* Close Button in Drawer */
-#menu-close {
-    font-size: 1.5rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.drawer-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-}
-
-/* Bottom Bar (Input) */
-.bottom-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    z-index: 90;
-    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
-    pointer-events: auto;
-}
-
-.input-row {
-    display: flex;
-    flex: 1;
-    gap: 0.5rem;
-}
-
-.random-btn {
-    font-size: 1.2rem;
-    padding: 0 1rem;
-}
-
-/* Desktop Defaults */
-.bottom-bar {
-    display: none;
-    /* Hidden on Desktop */
-    /* On PC, input is inside sidebar */
+/* Canvas needs to own gestures */
+canvas {
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
 
 /* --- MOBILE BREAKPOINT --- */
@@ -261,12 +42,214 @@ button.primary:hover {
     /* Enable Mobile Elements */
     #menu-toggle {
         display: flex;
+        position: absolute;
+        /* CRITICAL FIX */
         pointer-events: auto;
         /* Move to Right side */
-        top: 1rem;
+        top: 1.5rem;
+        /* Match Title alignment */
         right: 1.5rem;
-        /* Slightly more inside */
+        /* Ensure safe distance */
         left: auto;
+        /* Ensure it sits above Canvas and Overlay */
+        z-index: 1000;
+
+        /* Visuals from lost global block */
+        width: 44px;
+        height: 44px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+
+    #ui-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        /* Let clicks pass to canvas */
+        z-index: 10;
+        padding: 2rem;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    header {
+        pointer-events: auto;
+    }
+
+    h1 {
+        color: #ffffff;
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        margin: 0;
+        pointer-events: auto;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        top: 2rem;
+        left: 2rem;
+        z-index: 20;
+    }
+
+    #sample-view {
+        display: none;
+        width: 100px;
+        height: 100px;
+        background: #fff;
+        border: 1px solid #ddd;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: bold;
+    }
+
+    .controls {
+        width: 280px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        border-radius: 4px;
+        pointer-events: auto;
+        height: fit-content;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .control-group {
+        margin-bottom: 2rem;
+    }
+
+    .control-group label {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        margin-bottom: 0.8rem;
+        letter-spacing: 0.05em;
+        opacity: 0.6;
+    }
+
+    .row {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .param {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        font-family: inherit;
+        font-size: 1rem;
+        text-transform: uppercase;
+    }
+
+    input[type="range"] {
+        width: 60%;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 2px;
+        background: #ddd;
+        outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        background: var(--text-color);
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    button {
+        background: transparent;
+        border: 1px solid #000;
+        color: #000;
+        padding: 0.5rem 1rem;
+        font-family: inherit;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    button:hover {
+        background: #000;
+        color: #fff;
+    }
+
+    .mobile-guide {
+        display: none;
+    }
+
+    button.primary {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: #fff;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    button.primary:hover {
+        opacity: 0.9;
+    }
+
+    /* --- MOBILE SPECIFIC OVERRIDES --- */
+
+    /* Close Button in Drawer */
+    #menu-close {
+        font-size: 1.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .drawer-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    /* Bottom Bar (Input) */
+    .bottom-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        z-index: 90;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+        pointer-events: auto;
+    }
+
+    .input-row {
+        display: flex;
+        flex: 1;
+        gap: 0.5rem;
+    }
+
+    .random-btn {
+        font-size: 1.2rem;
+        padding: 0 1rem;
     }
 
     /* Hide Persistent Bottom Bar (User Request: Put it in the menu) */
