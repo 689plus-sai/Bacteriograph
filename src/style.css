@@ -202,7 +202,7 @@ button.primary:hover {
 }
 
 /* --- MOBILE SPECIFIC OVERRIDES --- */
-@media (max-width: 1024px) {
+@media (max-width: 850px) {
 
     /* Close Button in Drawer */
     #menu-close {

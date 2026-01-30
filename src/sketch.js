@@ -24,11 +24,13 @@ export const sketch = (p) => {
     };
 
     // OPTIMIZATION: Detect Mobile for Performance
-    // Simple check: Width < 768px (Standard Mobile Breakpoint)
+    // Simple check: Width < 850px (Covers iPhone 15 Pro Landscape ~844px)
     // We check this in setup or dynamically.
     const isMobile = () => {
-        return (p.windowWidth < 768);
+        return window.innerWidth < 850;
     };
+
+    console.log("Running v2.2 - Mobile Mode:", isMobile());
 
     // Dynamic Cap based on device
     // AGGRESSIVE OPTIMIZATION:
