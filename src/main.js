@@ -17,6 +17,14 @@ window.addEventListener('DOMContentLoaded', () => {
         console.error('Error initializing main sketch:', e);
     }
 
+    // FIX: Explicitly prevent default touchmove on canvas to stop scrolling on iOS
+    const container = document.getElementById('canvas-container');
+    if (container) {
+        container.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+    }
+
     /* 
     try {
         previewP5 = new p5(previewSketch, 'sample-view');

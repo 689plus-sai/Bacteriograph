@@ -583,7 +583,9 @@ export const sketch = (p) => {
 
         if (currentChar) {
             // Layout Calculation
-            const UI_RIGHT_MARGIN = 340;
+            // Layout Calculation
+            // FIX: On Mobile, Margin is 0 because drawer overlays/slides in.
+            const UI_RIGHT_MARGIN = isMobile() ? 0 : 340;
             const AVAILABLE_W = p.width - UI_RIGHT_MARGIN;
 
             let testSize = 100;
